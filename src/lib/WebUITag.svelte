@@ -8,6 +8,7 @@
   let editingMode: boolean = false;
   let editingText: string;
   let textInput: HTMLInputElement;
+  $: textboxSize = Math.max(editingText?.length, 1);
 
   const click = async (e: MouseEvent) => {
     editingMode = true;
@@ -16,7 +17,7 @@
     textInput.select();
   };
   const finishEditing = async () => {
-    dispatch("tagUpdated", {index, text: editingText});
+    dispatch("tagUpdated", { index, text: editingText });
     editingMode = false;
   };
 
@@ -25,10 +26,10 @@
   };
   const keyDownHandler = async (e: KeyboardEvent) => {
     switch (e.code) {
-      case "Escape":
+      case `Escape`:
         cancelEditing();
         break;
-      case "Tab":
+      case `Tab`:
       case `Enter`:
         finishEditing();
         break;
@@ -36,15 +37,17 @@
   };
 </script>
 
-<div class="flex border border-gray-500 font-medium text-xl font-mono">
+<div
+  class="flex border border-gray-500 font-medium text-xl font-mono px-2.5 py-0.5 rounded dark:bg-blue-900 dark:text-blue-300"
+>
   <div class="max-w-auto" on:click={click} on:keypress={null}>
-    {#if editingMode === true}
+    {#if editingMode}
       <input
         bind:this={textInput}
         bind:value={editingText}
         on:keydown={keyDownHandler}
         on:focusout={cancelEditing}
-        size={editingText.length}
+        size={textboxSize}
       />
     {:else}
       <span>{value}</span>
